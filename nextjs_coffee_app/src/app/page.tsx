@@ -1,21 +1,22 @@
-import { Coffee } from '@/types/coffee';
-import CoffeeCard from '@/components/CoffeeCard';
-import TopCoffeesButton from '@/components/TopCoffeesButton';
-import './globals.css';
+import { Coffee } from "@/types/coffee";
+import CoffeeCard from "@/components/CoffeeCard";
+import TopCoffeesButton from "@/components/TopCoffeesButton";
+import "./globals.css";
 
 async function getCoffees(): Promise<Coffee[]> {
-  const res = await fetch('https://api-overrides.anng.dev/api/proxy/main/coffee/hot');
+  const deploymentUrl = process.env.NEXT_PUBLIC_DEPLOYMENT_URL;
+  const res = await fetch(`${deploymentUrl}/api/coffee/hot`);
 
   if (!res.ok) {
-    throw new Error('Failed to fetch coffees');
+    throw new Error("Failed to fetch coffees");
   }
 
   const data: Coffee[] = await res.json();
 
-
   // Filter out entries with empty or placeholder titles
   return data.filter(
-    (coffee) => coffee.title && coffee.title !== 'title' && coffee.title.trim() !== ''
+    (coffee) =>
+      coffee.title && coffee.title !== "title" && coffee.title.trim() !== ""
   );
 }
 
@@ -41,7 +42,9 @@ export default async function Home() {
       </header>
 
       <main className="main">
-        <p className="subtitle">Discover our selection of {coffees.length} delicious coffees</p>
+        <p className="subtitle">
+          Discover our selection of {coffees.length} delicious coffees
+        </p>
 
         {error ? (
           <div className="error">
