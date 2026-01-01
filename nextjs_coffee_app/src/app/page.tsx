@@ -5,7 +5,9 @@ import "./globals.css";
 
 async function getCoffees(): Promise<Coffee[]> {
   const deploymentUrl = process.env.NEXT_PUBLIC_DEPLOYMENT_URL;
-  const res = await fetch(`${deploymentUrl}/api/coffee/hot`);
+  const res = await fetch(`${deploymentUrl}/api/coffee/hot`, {
+    next: { revalidate: 60 }, // ISR: Revalidate every 60 seconds
+  });
 
   if (!res.ok) {
     throw new Error("Failed to fetch coffees");
