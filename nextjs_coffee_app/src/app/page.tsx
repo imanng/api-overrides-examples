@@ -1,12 +1,25 @@
 import { Coffee } from "@/types/coffee";
 import CoffeeCard from "@/components/CoffeeCard";
 import TopCoffeesButton from "@/components/TopCoffeesButton";
+import { headers } from "next/headers";
 import "./globals.css";
 
 async function getCoffees(): Promise<Coffee[]> {
   const deploymentUrl = process.env.NEXT_PUBLIC_DEPLOYMENT_URL;
+
+  // Get client IP from the original request headers
+  const headersList = await headers();
+  const clientIP =
+    headersList.get("x-forwarded-for")?.split(",")[0]?.trim() ||
+    headersList.get("x-real-ip") ||
+    "unknown";
+
   const res = await fetch(`${deploymentUrl}/api/coffee/hot`, {
     cache: 'no-store', // SSR: Fetch fresh data on every request
+    headers: {
+      "X-Forwarded-For": clientIP,
+      "X-Real-IP": clientIP,
+    },
   });
 
   if (!res.ok) {
