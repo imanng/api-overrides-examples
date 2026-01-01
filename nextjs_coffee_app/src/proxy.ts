@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 
 const baseAPI = "https://api-overrides.anng.dev/api/proxy/main";
 
-export function middleware(request: NextRequest) {
+export function proxy(request: NextRequest) {
     // Only handle /api/* routes
     if (request.nextUrl.pathname.startsWith("/api/")) {
         const path = request.nextUrl.pathname.replace("/api", "");

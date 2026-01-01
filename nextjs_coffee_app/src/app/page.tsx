@@ -27,6 +27,9 @@ async function getCoffees(): Promise<Coffee[]> {
 
   const data: Coffee[] = await res.json();
 
+  console.log('headers', headersList);
+  console.log('coffees SSR', data);
+
   // Filter out entries with empty or placeholder titles
   return data.filter(
     (coffee) =>
