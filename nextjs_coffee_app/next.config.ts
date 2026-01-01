@@ -1,15 +1,7 @@
 import type { NextConfig } from "next";
 
-const baseAPI = "https://api-overrides.anng.dev/api/proxy/main";
 const nextConfig: NextConfig = {
-  async rewrites() {
-    return [
-      {
-        source: "/api/:path*",
-        destination: `${baseAPI}/:path*`,
-      },
-    ];
-  },
+  // API proxying is now handled by middleware with IP forwarding
 };
 
 export default nextConfig;
