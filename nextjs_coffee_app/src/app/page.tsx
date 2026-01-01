@@ -4,21 +4,20 @@ import TopCoffeesButton from "@/components/TopCoffeesButton";
 import { headers } from "next/headers";
 import "./globals.css";
 
+// Force dynamic rendering (SSR) since we need request headers
+export const dynamic = 'force-dynamic';
+
+const baseAPI = "https://api-overrides.anng.dev/api/proxy/main";
+
 async function getCoffees(): Promise<Coffee[]> {
-  const deploymentUrl = process.env.NEXT_PUBLIC_DEPLOYMENT_URL;
-
-  // Get client IP from the original request headers
+  // Forward original request headers (includes X-Forwarded-For from Vercel/hosting)
   const headersList = await headers();
-  const clientIP =
-    headersList.get("x-forwarded-for")?.split(",")[0]?.trim() ||
-    headersList.get("x-real-ip") ||
-    "unknown";
 
-  const res = await fetch(`${deploymentUrl}/api/coffee/hot`, {
-    cache: 'no-store', // SSR: Fetch fresh data on every request
+  const res = await fetch(`${baseAPI}/coffee/hot`, {
+    cache: 'no-store',
     headers: {
-      "X-Forwarded-For": clientIP,
-      "X-Real-IP": clientIP,
+      "X-Forwarded-For": headersList.get("x-forwarded-for") || "",
+      "X-Real-IP": headersList.get("x-real-ip") || "",
     },
   });
 
