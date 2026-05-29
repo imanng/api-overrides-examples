@@ -1,10 +1,15 @@
 import { Coffee, getCoffeeImage, getCoffeeIngredients } from "@/types/coffee";
+import { getOverrideForwardingHeaders } from "@/lib/overrideForwarding";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 
 async function getCoffee(id: string): Promise<Coffee | null> {
   const deploymentUrl = process.env.NEXT_PUBLIC_DEPLOYMENT_URL;
-  const res = await fetch(`${deploymentUrl}/api/coffee/hot/${id}`);
+  const forwardingHeaders = await getOverrideForwardingHeaders();
+  const res = await fetch(`${deploymentUrl}/api/coffee/hot/${id}`, {
+    headers: forwardingHeaders,
+    cache: "no-store",
+  });
 
   if (!res.ok) {
     return null;

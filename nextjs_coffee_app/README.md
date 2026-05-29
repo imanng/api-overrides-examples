@@ -1,36 +1,51 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Next.js Coffee App
+
+A Next.js 16 App Router example for API Overrides. The app renders coffee data
+through the API Overrides proxy and demonstrates server-side data fetching plus a
+small client-side top-coffees dialog.
 
 ## Getting Started
 
-First, run the development server:
+Create a local environment file:
+
+```bash
+cp .env.example .env.local
+```
+
+For local development, the default values are:
+
+```env
+NEXT_PUBLIC_DEPLOYMENT_URL=http://localhost:3000
+API_OVERRIDES_PROXY_BASE_URL=https://api-overrides.anng.dev/api/proxy/main
+OVERRIDE_PROXY_SECRET=""
+```
+
+Start the app:
 
 ```bash
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Open [http://localhost:3000](http://localhost:3000).
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## SSR User IP Forwarding
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+Server-rendered pages fetch through the local `/api/coffee/...` rewrite. When
+`OVERRIDE_PROXY_SECRET` is set, those SSR fetches also forward:
 
-## Learn More
+```txt
+x-override-client-ip
+x-override-proxy-secret
+```
 
-To learn more about Next.js, take a look at the following resources:
+`OVERRIDE_PROXY_SECRET` must match the value configured in API Overrides. It is a
+server-only secret and must not use a `NEXT_PUBLIC_` prefix. Client components do
+not send it.
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## Scripts
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+```bash
+npm run dev
+npm run lint
+npm run build
+```

@@ -1,13 +1,16 @@
 import { Coffee } from "@/types/coffee";
 import CoffeeCard from "@/components/CoffeeCard";
 import TopCoffeesButton from "@/components/TopCoffeesButton";
+import { getOverrideForwardingHeaders } from "@/lib/overrideForwarding";
 import "./globals.css";
 
 const deploymentUrl = process.env.NEXT_PUBLIC_DEPLOYMENT_URL;
 
 async function getCoffees(): Promise<Coffee[]> {
+  const forwardingHeaders = await getOverrideForwardingHeaders();
   const res = await fetch(`${deploymentUrl}/api/coffee/hot`, {
-    cache: 'no-store', // SSR: Fetch fresh data on every request
+    headers: forwardingHeaders,
+    cache: "no-store", // SSR: Fetch fresh data on every request
   });
 
   if (!res.ok) {
@@ -15,8 +18,6 @@ async function getCoffees(): Promise<Coffee[]> {
   }
 
   const data: Coffee[] = await res.json();
-
-  console.log('coffees SSR', data);
 
   // Filter out entries with empty or placeholder titles
   return data.filter(
@@ -32,7 +33,7 @@ export default async function Home() {
   try {
     coffees = await getCoffees();
   } catch (e) {
-    console.log(e);
+    console.error(e);
     error = true;
   }
 

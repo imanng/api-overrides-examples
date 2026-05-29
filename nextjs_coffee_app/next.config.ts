@@ -1,6 +1,8 @@
 import type { NextConfig } from "next";
 
-const baseAPI = "https://api-overrides.anng.dev/api/proxy/main";
+const baseAPI =
+  process.env.API_OVERRIDES_PROXY_BASE_URL ||
+  "https://api-overrides.anng.dev/api/proxy/main";
 
 const nextConfig: NextConfig = {
   async rewrites() {
